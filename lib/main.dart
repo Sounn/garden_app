@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'user/sign_up.dart';
+import 'user/login_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,95 +21,65 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyAuthPage(),
+      home: HomePage(),
+      routes: <String, WidgetBuilder> {
+      '/home': (BuildContext context) => HomePage(),
+      '/sign_up': (BuildContext context) => SignUpPage(),
+      '/login':(BuildContext context) => LoginPage(),
+    },
     );
   }
 }
 
-class MyAuthPage extends StatefulWidget {
+class HomePage extends StatefulWidget {
   @override
-  _MyAuthPageState createState() => _MyAuthPageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _MyAuthPageState extends State<MyAuthPage> {
-  // 入力されたメールアドレス
-  String newUserEmail = "";
-  // 入力されたパスワード
-  String newUserPassword = "";
-
-  // 登録・ログインに関する情報を表示
-  String infoText = "";
-
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ログイン'),
+        title: Text('ホーム'),
         backgroundColor: Colors.green,
       ),
-      body: Center(
-        child: Container(
-          padding: EdgeInsets.all(32),
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                // テキスト入力のラベルを設定
-                decoration: InputDecoration(labelText: "メールアドレス"),
-                onChanged: (String value) {
-                  setState(() {
-                    newUserEmail = value;
-                  });
-                },
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: "パスワード（６文字以上）"),
-                // パスワードが見えないようにする
-                obscureText: true,
-                onChanged: (String value) {
-                  setState(() {
-                    newUserPassword = value;
-                  });
-                },
-              ),
-              RaisedButton(
-                onPressed: () async {
-                  try {
-                    print('登録');
-                    // メール/パスワードでユーザー登録
-                    final FirebaseAuth auth = FirebaseAuth.instance;
-                    final UserCredential result = 
-                        await auth.createUserWithEmailAndPassword(
-                      email: newUserEmail,
-                      password: newUserPassword,
-                    );
-                    // 登録したユーザー情報
-                  //   final FirebaseUser user = result.user;
-                  //   setState(() {
-                  //     infoText = "登録OK：${user.email}";
-                  //   });
-                  // } catch (e) {
-                  //   // 登録に失敗した場合
-                  //   setState(() {
-                  //     infoText = "登録NG：${e.message}";
-                  //   });
-                  // }
-                  }on FirebaseAuthException catch (e) {
-                    if (e.code == 'weak-password') {
-                      print('The password provided is too weak.');
-                    } else if (e.code == 'email-already-in-use') {
-                      print('The account already exists for that email.');
-                    }
-                  } catch (e) {
-                    print(e);
-                  }
-                },
-                child: Text("ユーザー登録"),
-              ),
-              Text(infoText)
-            ],
+      body: ListView(
+      padding: const EdgeInsets.all(8),
+      children: <Widget>[
+        Container(
+          height: 50,
+          color: Colors.amber[600],
+          child: TextButton(
+            child: Text('アカウント作成'),
+            onPressed: (){
+              Navigator.pushNamed(context , '/sign_up');
+            }
           ),
         ),
-      ),
+        Container(
+          height: 50,
+          color: Colors.amber[500],
+          child: TextButton(
+            child: Text('ログインする'),
+            onPressed: (){
+              Navigator.pushNamed(context , '/login');
+            }
+          ),
+        ),
+        Container(
+          height: 50,
+          color: Colors.amber[100],
+          child: TextButton(
+            child: Text('ログアウト'),
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              print('ログアウトしました');
+            }
+          ),
+        ),
+      ],
+      )
     );
   }
 }
