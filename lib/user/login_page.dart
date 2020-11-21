@@ -58,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
                       print('Wrong password provided for that user.');
                     }
                   }
-                  Navigator.pushNamed(context , '/home');
+                  Navigator.pushNamed(context , '/login_check');
                 },
                 child: Text("ログインする"),
               ),

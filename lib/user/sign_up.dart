@@ -62,8 +62,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   } catch (e) {
                     print(e);
                   }
-                  Navigator.pushNamed(context , '/home');
-                },
+                  Navigator.pushNamed(context , '/login_check');
+                  },
                 child: Text("ユーザー登録"),
               ),
             ],
