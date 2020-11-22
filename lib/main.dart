@@ -1,8 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'user/sign_up.dart';
-import 'user/login_page.dart';
+import 'users/sign_up.dart';
+import 'users/login_page.dart';
+import 'users/setting_page.dart';
+import 'gardens/garden_list_page.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,10 +25,11 @@ class MyApp extends StatelessWidget {
       ),
       home: CheckAuth(),
       routes: <String, WidgetBuilder> {
-      '/home': (BuildContext context) => HomePage(),
+      '/home': (BuildContext context) => GardenListPage(),
       '/sign_up': (BuildContext context) => SignUpPage(),
       '/login':(BuildContext context) => LoginPage(),
       '/login_check':(BuildContext context) => CheckAuth(),
+      '/settings':(BuildContext context) => UserSettingPage(),
     },
     );
   }
@@ -51,44 +55,9 @@ class _CheckAuthState extends State<CheckAuth> {
 
   @override
   Widget build(BuildContext context) {
-    return isnotLoggedIn ? LoginOrSigninPage() : HomePage();
+    return isnotLoggedIn ? LoginOrSigninPage() : GardenListPage();
   }
 }
-
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('ホーム'),
-        backgroundColor: Colors.green,
-      ),
-      body: ListView(
-          padding: const EdgeInsets.all(8),
-          children: <Widget>[
-            Container( 
-              height: 50,
-              color: Colors.amber[100],
-              child: TextButton(
-                child: Text('ログアウト'),
-                onPressed: () async {
-                  await FirebaseAuth.instance.signOut();
-                  print('ログアウトしました');
-                  Navigator.pushNamed(context , '/login_check');
-                }
-              ),
-            ),
-          ],
-        )
-    );
-  }
-}
-
 class LoginOrSigninPage extends StatefulWidget {
   @override
   _LoginOrSigninPageState createState() => _LoginOrSigninPageState();

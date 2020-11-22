@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -53,6 +54,14 @@ class _SignUpPageState extends State<SignUpPage> {
                       email: newUserEmail,
                       password: newUserPassword,
                     );
+                    await FirebaseFirestore.instance
+                          .collection('users') // コレクションID指定
+                          .doc() // ドキュメントID自動生成
+                          // ignore: deprecated_member_use
+                          .setData({
+                            'email': newUserEmail,
+                            'uid': auth.currentUser.uid,
+                          });// データ
                   }on FirebaseAuthException catch (e) {
                     if (e.code == 'weak-password') {
                       print('The password provided is too weak.');
