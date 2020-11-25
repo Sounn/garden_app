@@ -31,7 +31,7 @@ class GardenListPage extends StatelessWidget {
                         child: ListTile(
                           title: Text(garden.vegetable),
                           onTap: (){
-                            Navigator.of(context).pushNamed("/update", arguments: garden);
+                            Navigator.of(context).pushNamed("/vegetable", arguments: garden.documentID);
                           },
                         ),
                       ),

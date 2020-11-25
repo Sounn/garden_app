@@ -5,6 +5,7 @@ import 'users/sign_up.dart';
 import 'users/login_page.dart';
 import 'users/setting_page.dart';
 import 'gardens/garden_list_page.dart';
+import 'gardens/vegetable_single_page.dart';
 
 
 void main() async {
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
       '/login':(BuildContext context) => LoginPage(),
       '/login_check':(BuildContext context) => CheckAuth(),
       '/settings':(BuildContext context) => UserSettingPage(),
+      '/vegetable':(BuildContext context) => VegetableSinglePage(),
     },
     );
   }
