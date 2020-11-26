@@ -14,7 +14,8 @@ class _VegetableSinglePageState extends State<VegetableSinglePage> {
       builder: (context, snapshot) {
         return Scaffold(
           appBar: AppBar(
-            title: Text(snapshot.data["vegetable"])
+            title: Text(snapshot.data["vegetable"]),
+            backgroundColor: Colors.green,
           ),
           body:Text(snapshot.data["vegetable"])
         );
