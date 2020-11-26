@@ -10,80 +10,104 @@ class GardenListPage extends StatefulWidget {
 }
 class _GardenListPageState extends State<GardenListPage> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  // ignore: unused_field
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      '',
-      style: optionStyle,
+
+  List<Widget> _widgetOptions = <Widget>[
+    Center(child: _HomeOption(),
     ),
-    Text(
-      '設定ページ',
-      style: optionStyle,
+    Center(child: _AlertOption(),
+    ),
+    Center(child: _AccountOption(),
     ),
   ];
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<GardenModel>(
-      create: (_) => GardenModel()..fetchGardens(),
-      child: Scaffold(
-            appBar: AppBar(
-            title: Text('野菜一覧'),
-            backgroundColor: Colors.green,
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.settings),
-                onPressed: (){
-                    Navigator.pushNamed(context , '/settings');
-                },
-              ),
-            ],
-            ),
-            body: Consumer<GardenModel>(
-              builder: (context, model, child) {
-                final gardens = model.gardens;
-                final listTiles = gardens
-                  .map(
-                    (garden) => Container(
-                        color: Colors.white,
-                        child: ListTile(
-                          title: Text(garden.vegetable),
-                          onTap: (){
-                            Navigator.of(context).pushNamed("/vegetable", arguments: garden.documentID);
-                          },
-                        ),
-                      ),
-                  ).toList();
-                return ListView(
-                  children: listTiles,
-                ); 
-              },
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-                items: const [
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.home),
-                    label: 'Home',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.settings),
-                    label: 'settings',
-                  ),
-                ],
-                currentIndex: _selectedIndex,
-                selectedItemColor: Colors.amber[800],
-                onTap: _onItemTapped,
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('野菜一覧'),
+        backgroundColor: Colors.green,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: (){
+                Navigator.pushNamed(context , '/settings');
+            },
+          ),
+        ],
       ),
+      body: Center( child: _widgetOptions.elementAt(_selectedIndex),),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'ホーム',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_alert_outlined),
+            label: 'お知らせ',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_box),
+            label: 'マイページ',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.amber[800],
+        onTap: _onItemTapped,
+        ),
     );
   }
   Future updateGarden(Garden garden,BuildContext context) async {
     final document = FirebaseFirestore.instance.collection('gardens').doc(garden.documentID);
     await document.delete();
+  }
+}
+
+class _HomeOption extends StatelessWidget{ //ホームページ
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<GardenModel>(
+      create: (_) => GardenModel()..fetchGardens(),
+      child: Consumer<GardenModel>(
+        builder: (context, model, child) {
+          final gardens = model.gardens;
+          final listTiles = gardens
+            .map(
+              (garden) => Container(
+                  color: Colors.white,
+                  child: ListTile(
+                    title: Text(garden.vegetable),
+                    onTap: (){
+                      Navigator.of(context).pushNamed("/vegetable", arguments: garden.documentID);
+                    },
+                  ),
+                ),
+            ).toList();
+          return ListView(
+            children: listTiles,
+          ); 
+        },
+      ),
+    );
+  }
+}
+
+class _AlertOption extends StatelessWidget{
+  @override
+  Widget build(BuildContext context){
+    return Text('通知');
+  }
+}
+
+class _AccountOption extends StatelessWidget{
+  @override
+  Widget build(BuildContext context){
+    return Text('アカウントページ');
   }
 }
