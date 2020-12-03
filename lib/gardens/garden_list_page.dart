@@ -3,6 +3,7 @@ import 'garden_model.dart';
 import 'garden.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class GardenListPage extends StatefulWidget {
   @override
@@ -29,18 +30,6 @@ class _GardenListPageState extends State<GardenListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('野菜一覧'),
-        backgroundColor: Colors.green,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: (){
-                Navigator.pushNamed(context , '/settings');
-            },
-          ),
-        ],
-      ),
       body: Center( child: _widgetOptions.elementAt(_selectedIndex),),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
@@ -72,27 +61,41 @@ class _GardenListPageState extends State<GardenListPage> {
 class _HomeOption extends StatelessWidget{ //ホームページ
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<GardenModel>(
-      create: (_) => GardenModel()..fetchGardens(),
-      child: Consumer<GardenModel>(
-        builder: (context, model, child) {
-          final gardens = model.gardens;
-          final listTiles = gardens
-            .map(
-              (garden) => Container(
-                  color: Colors.white,
-                  child: ListTile(
-                    title: Text(garden.vegetable),
-                    onTap: (){
-                      Navigator.of(context).pushNamed("/vegetable", arguments: garden.documentID);
-                    },
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('野菜一覧'),
+        backgroundColor: Colors.green,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: (){
+                Navigator.pushNamed(context , '/settings');
+            },
+          ),
+        ],
+      ),
+      body: ChangeNotifierProvider<GardenModel>(
+        create: (_) => GardenModel()..fetchGardens(),
+        child: Consumer<GardenModel>(
+          builder: (context, model, child) {
+            final gardens = model.gardens;
+            final listTiles = gardens
+              .map(
+                (garden) => Container(
+                    color: Colors.white,
+                    child: ListTile(
+                      title: Text(garden.vegetable),
+                      onTap: (){
+                        Navigator.of(context).pushNamed("/vegetable", arguments: garden.documentID);
+                      },
+                    ),
                   ),
-                ),
-            ).toList();
-          return ListView(
-            children: listTiles,
-          ); 
-        },
+              ).toList();
+            return ListView(
+              children: listTiles,
+            ); 
+          },
+        ),
       ),
     );
   }
@@ -101,13 +104,36 @@ class _HomeOption extends StatelessWidget{ //ホームページ
 class _AlertOption extends StatelessWidget{
   @override
   Widget build(BuildContext context){
-    return Text('通知');
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('通知  |  ニュース'),
+        backgroundColor: Colors.green,
+      ),
+      body:Center( 
+        child: Text('通知リスト')
+      )
+    );
   }
 }
 
 class _AccountOption extends StatelessWidget{
   @override
   Widget build(BuildContext context){
-    return Text('アカウントページ');
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('設定'),
+        backgroundColor: Colors.green,
+      ),
+      body:Center( 
+        child: TextButton(
+          child: Text('ログアウト'),
+          onPressed: () async {
+            await FirebaseAuth.instance.signOut();
+            print('ログアウトしました');
+            Navigator.pushNamed(context , '/login_check');
+          }
+        ),
+      )
+    );
   }
 }
