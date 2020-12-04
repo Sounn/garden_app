@@ -97,6 +97,14 @@ class _HomeOption extends StatelessWidget{ //ホームページ
           },
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          Navigator.of(context).pushNamed("/new");
+        },
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
+        backgroundColor: Colors.green,
+      ),
     );
   }
 }

@@ -6,7 +6,7 @@ import 'users/login_page.dart';
 import 'users/setting_page.dart';
 import 'gardens/garden_list_page.dart';
 import 'gardens/vegetable_single_page.dart';
-
+import 'gardens/garden_new_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +32,7 @@ class MyApp extends StatelessWidget {
       '/login_check':(BuildContext context) => CheckAuth(),
       '/settings':(BuildContext context) => UserSettingPage(),
       '/vegetable':(BuildContext context) => VegetableSinglePage(),
+      '/new':(BuildContext context) => GardenNewPage(),
     },
     );
   }
