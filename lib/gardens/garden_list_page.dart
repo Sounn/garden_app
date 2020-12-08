@@ -67,9 +67,9 @@ class _HomeOption extends StatelessWidget{ //ホームページ
         backgroundColor: Colors.green,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.settings),
+            icon: Icon(Icons.restore_from_trash),
             onPressed: (){
-                Navigator.pushNamed(context , '/settings');
+              print("消去する");
             },
           ),
         ],

@@ -16,7 +16,7 @@ class _GardenNewPageState extends State<GardenNewPage> {
           backgroundColor: Colors.white10,
           elevation: 0.0,
           iconTheme: IconThemeData(
-              color: Colors.blue,
+              color: Colors.green,
           ),
         ),
         body: Container(
@@ -37,9 +37,9 @@ class _GardenNewPageState extends State<GardenNewPage> {
               TextFormField(
                 enabled: true,
                 decoration: InputDecoration(
-                  hintText: '植物の名前',
-                  icon: Icon(Icons.work),
+                  icon: Icon(Icons.filter_vintage,color: Colors.green),
                   labelText: '植物の名前 *',
+                  labelStyle:TextStyle(color: Colors.green),
                 ),
                 onChanged: (String value) {
                     gardenName = value;
@@ -50,6 +50,9 @@ class _GardenNewPageState extends State<GardenNewPage> {
                 padding: const EdgeInsets.symmetric(vertical: 50.0),
                 child: ElevatedButton(
                   child: Text('次へ'),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+                  ),
                   onPressed: () async {
                     Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => _ImageUploadPage()));
                   },
@@ -75,7 +78,7 @@ class __ImageUploadPageState extends State<_ImageUploadPage> {
           backgroundColor: Colors.white10,
           elevation: 0.0,
           iconTheme: IconThemeData(
-              color: Colors.blue, //change your color here
+              color: Colors.green,//change your color here
           ),
         ),
         body:Container(
