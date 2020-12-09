@@ -110,34 +110,56 @@ class __ImageUploadPageState extends State<_ImageUploadPage> {
               color: Colors.green,//change your color here
           ),
         ),
-        body:Center(
-              child: _image == null
-                  ? Text('画像が選択されていません。')
-                  : Image.file(_image),
+        body:Container(
+              child: (() {
+                if ( _image == null ){
+                  return Center(child:Text('画像が選択されていません。'));
+                } else {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        child:Image.file(_image),
+                      ),
+                      Container(
+                        child: ElevatedButton(
+                          child: Text('次へ'),
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+                          ),
+                          onPressed: () async {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => _ImageUploadPage()));
+                          },
+                        ),
+                      )
+                    ]
+                  );
+              }})(),
+        ),
+        floatingActionButton: Column(
+          verticalDirection: VerticalDirection.up, // childrenの先頭を下に配置
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            FloatingActionButton(
+              heroTag: "hero1",
+              onPressed: getImage,
+              tooltip: 'Pick Image',
+              child: Icon(Icons.add_a_photo)
+              // backgroundColor: Colors.redAccent,
             ),
-            floatingActionButton: Column(
-              verticalDirection: VerticalDirection.up, // childrenの先頭を下に配置
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                FloatingActionButton(
-                  heroTag: "hero1",
-                  onPressed: getImage,
-                  tooltip: 'Pick Image',
-                  child: Icon(Icons.add_a_photo)
-                  // backgroundColor: Colors.redAccent,
-                ),
-                Container( // 余白のためContainerでラップ
-                  margin: EdgeInsets.only(bottom: 16.0), 
-                  child: FloatingActionButton(
-                    heroTag: "hero2",
-                    onPressed: chooseImage,
-                    tooltip: 'Pick Image',
-                    child: Icon(Icons.photo_album),
-                    // backgroundColor: Colors.amberAccent,
-                  ),
-                ),
-              ], 
-            )
+            Container( // 余白のためContainerでラップ
+              margin: EdgeInsets.only(bottom: 16.0), 
+              child: FloatingActionButton(
+                heroTag: "hero2",
+                onPressed: chooseImage,
+                tooltip: 'Pick Image',
+                child: Icon(Icons.photo_album),
+                // backgroundColor: Colors.amberAccent,
+              ),
+            ),
+          ], 
+        ),
     );
   }
 }
