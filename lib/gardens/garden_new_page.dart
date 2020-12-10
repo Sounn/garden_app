@@ -1,7 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 
 class GardenNewPage extends StatefulWidget {
@@ -56,7 +54,13 @@ class _GardenNewPageState extends State<GardenNewPage> {
                     backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
                   ),
                   onPressed: () async {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => _ImageUploadPage()));
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => _ImageUploadPage(),
+                        settings: RouteSettings(
+                          arguments: gardenName,
+                        ),
+                      ));
                   },
                 ),
               ),
@@ -69,10 +73,10 @@ class _GardenNewPageState extends State<GardenNewPage> {
 
 class _ImageUploadPage extends StatefulWidget{
   @override
-  __ImageUploadPageState createState() => __ImageUploadPageState();
+  _ImageUploadPageState createState() => _ImageUploadPageState();
 }
 
-class __ImageUploadPageState extends State<_ImageUploadPage> {
+class _ImageUploadPageState extends State<_ImageUploadPage> {
   File _image;
   final picker = ImagePicker();
 
@@ -102,6 +106,7 @@ class __ImageUploadPageState extends State<_ImageUploadPage> {
 
   @override
   Widget build(BuildContext context){
+    final String gardenName = ModalRoute.of(context).settings.arguments;
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white10,
@@ -123,8 +128,11 @@ class __ImageUploadPageState extends State<_ImageUploadPage> {
                         child:Image.file(_image),
                       ),
                       Container(
+                        child:Text(gardenName),
+                      ),
+                      Container(
                         child: ElevatedButton(
-                          child: Text('次へ'),
+                          child: Text('保存する'),
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
                           ),
