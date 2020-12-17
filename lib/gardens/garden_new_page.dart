@@ -1,6 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:path_provider/path_provider.dart';
 
 class GardenNewPage extends StatefulWidget {
   @override
@@ -104,6 +108,18 @@ class _ImageUploadPageState extends State<_ImageUploadPage> {
     });
   }
 
+  Future<void> uploadFile() async {
+  try {
+    await FirebaseStorage.instance
+        .ref('uploads/file-to-upload.png')
+        .putFile(_image);
+  } on FirebaseException catch (e) {
+    print("***");
+    print(e);
+    print("***");
+  }
+}
+
   @override
   Widget build(BuildContext context){
     final String gardenName = ModalRoute.of(context).settings.arguments;
@@ -137,7 +153,16 @@ class _ImageUploadPageState extends State<_ImageUploadPage> {
                             backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
                           ),
                           onPressed: () async {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => _ImageUploadPage()));
+                            uploadFile();
+                            await FirebaseFirestore.instance
+                            .collection('gardens') // コレクションID指定
+                            .doc() // ドキュメントID自動生成
+                            // ignore: deprecated_member_use
+                            .setData({
+                              'uid': FirebaseAuth.instance.currentUser.uid,
+                              'vegetable': gardenName,
+                            });// データ
+                            Navigator.of(context).pushReplacementNamed("/home");
                           },
                         ),
                       )
