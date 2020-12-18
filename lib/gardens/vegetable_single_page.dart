@@ -17,7 +17,18 @@ class _VegetableSinglePageState extends State<VegetableSinglePage> {
             title: Text(snapshot.data["vegetable"]),
             backgroundColor: Colors.green,
           ),
-          body:Text(snapshot.data["vegetable"])
+          body:Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                child: Image.network(snapshot.data["imageURL"]),
+              ),
+              Container(
+                child:Text(snapshot.data["vegetable"]),
+              ),
+            ]
+          ),
         );
     },
   );

@@ -109,18 +109,18 @@ class _ImageUploadPageState extends State<_ImageUploadPage> {
   }
 
   Future<void> uploadFile() async {
-    final shortUuid = ShortUuid.shortv4();
-    try {
-      await FirebaseStorage.instance
-          .ref()
-          .child('uploads/')
-          .child(shortUuid + '.png')
-          .putFile(_image);
-    } on FirebaseException catch (e) {
-      print("***");
-      print(e);
-      print("***");
-    }
+  final shortUuid = ShortUuid.shortv4();
+  try {
+    await FirebaseStorage.instance
+        .ref()
+        .child('uploads/')
+        .child(shortUuid + '.png')
+        .putFile(_image);
+  } on FirebaseException catch (e) {
+    print("***");
+    print(e);
+    print("***");
+  }
 }
 
   @override
@@ -156,7 +156,21 @@ class _ImageUploadPageState extends State<_ImageUploadPage> {
                             backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
                           ),
                           onPressed: () async {
-                            uploadFile();
+                            // uploadFile();
+                            final shortUuid = ShortUuid.shortv4();
+                            final storage = FirebaseStorage.instance;
+                            final ref = storage
+                                  .ref()
+                                  .child('uploads/')
+                                  .child(shortUuid + '.png');
+                            try {
+                              await ref.putFile(_image);
+                            } on FirebaseException catch (e) {
+                              print("***");
+                              print(e);
+                              print("***");
+                            }
+                            final downloadURL = await ref.getDownloadURL();
                             await FirebaseFirestore.instance
                             .collection('gardens') // コレクションID指定
                             .doc() // ドキュメントID自動生成
@@ -164,6 +178,8 @@ class _ImageUploadPageState extends State<_ImageUploadPage> {
                             .setData({
                               'uid': FirebaseAuth.instance.currentUser.uid,
                               'vegetable': gardenName,
+                              'imageURL': downloadURL,
+                              'createdAt': Timestamp.now(),
                             });// データ
                             Navigator.of(context).pushReplacementNamed("/home");
                           },
@@ -199,29 +215,3 @@ class _ImageUploadPageState extends State<_ImageUploadPage> {
     );
   }
 }
-// Container(
-//           child:Column(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             // mainAxisSize: MainAxisSize.min,
-//             children: <Widget>[
-//               Container(
-//                 child: Text("写真",
-//                       style: TextStyle(
-//                         fontWeight: FontWeight.bold,
-//                         fontSize: 25,
-//                         color: Colors.black,
-//                         ),
-//                       )
-//               ),
-//               Padding(
-//                   padding: const EdgeInsets.symmetric(vertical: 50.0),
-//                   child: ElevatedButton(
-//                     child: Text('次へ'),
-//                     onPressed: () async {
-//                       Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => _ImageUploadPage()));
-//                     },
-//                   ),
-//                 ),
-//             ],
-//           ),
-//         )
