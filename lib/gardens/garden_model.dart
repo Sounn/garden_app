@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'garden.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 class GardenModel extends ChangeNotifier {
-  List<Garden> gardens = [];
-  String todoText = ''; 
+  List<Garden> gardens = []; 
   final user = FirebaseAuth.instance.currentUser;
 
   Future fetchGardens() async {

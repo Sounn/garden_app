@@ -5,9 +5,11 @@ class Garden{
     documentID = doc.documentID;
     uid = doc['uid'];
     vegetable = doc['vegetable'];
+    imageURL = doc['imageURL'];
   }
 
   String documentID;
   String uid;
   String vegetable;
+  String imageURL;
 }

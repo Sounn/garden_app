@@ -84,11 +84,12 @@ class _HomeOption extends StatelessWidget{ //ホームページ
                 (garden) => Container(
                     color: Colors.white,
                     child: ListTile(
-                      title: Text(garden.vegetable),
-                      onTap: (){
-                        Navigator.of(context).pushNamed("/vegetable", arguments: garden.documentID);
-                      },
-                    ),
+                            leading: Image.network(garden.imageURL),
+                            title: Text(garden.vegetable),
+                            onTap: (){
+                              Navigator.of(context).pushNamed("/vegetable", arguments: garden.documentID);
+                            },
+                          ),
                   ),
               ).toList();
             return ListView(
