@@ -5,7 +5,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shortuuid/shortuuid.dart';
-
+class GardenArguments{
+  final TimeOfDay timer;
+  final String name;
+  GardenArguments(this.name,this.timer);
+}
 class GardenNewPage extends StatefulWidget {
   @override
   _GardenNewPageState createState() => _GardenNewPageState();
@@ -60,7 +64,7 @@ class _GardenNewPageState extends State<GardenNewPage> {
                   onPressed: () async {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (BuildContext context) => _ImageUploadPage(),
+                        builder: (BuildContext context) => _TimeSelectPage(),
                         settings: RouteSettings(
                           arguments: gardenName,
                         ),
@@ -74,6 +78,85 @@ class _GardenNewPageState extends State<GardenNewPage> {
     );
   }
 }
+
+class _TimeSelectPage extends StatefulWidget{
+  @override
+  _TimeSelectPageState createState() => _TimeSelectPageState();
+}
+
+class _TimeSelectPageState extends State<_TimeSelectPage>{
+  TimeOfDay _time = TimeOfDay.now();
+
+  void _selectTime() async {
+    final TimeOfDay picked = await showTimePicker(
+        context: context,
+        initialTime: _time,
+        initialEntryMode: TimePickerEntryMode.input,
+    );
+    if(picked != null) setState(() {
+      _time = picked;
+
+    });
+  }
+
+  Widget build(BuildContext context) {
+    String gardenName = ModalRoute.of(context).settings.arguments;
+    return Scaffold(
+      appBar: AppBar(
+          title:Text(gardenName,style: TextStyle(color: Colors.black)),
+          centerTitle: true,
+          backgroundColor: Colors.white10,
+          elevation: 0.0,
+          iconTheme: IconThemeData(
+              color: Colors.green,
+          ),
+        ),
+      body:Container(
+        child:Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            // ignore: unnecessary_brace_in_string_interps
+            Center(child:Text("水やりタイマー")),
+            Text('Selected time: ${_time.format(context)}'),
+            RaisedButton(
+              child: Text('時間選択'),
+              color: Colors.green,
+              textColor: Colors.white,
+              shape: const StadiumBorder(),
+              onPressed: () {
+                _selectTime();
+                }
+            ),
+            Padding(
+                padding: const EdgeInsets.symmetric(vertical: 50.0),
+                child: ElevatedButton(
+                  child: Text('次へ'),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+                  ),
+                  onPressed: () async {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => _ImageUploadPage(),
+                        settings: RouteSettings(
+                          arguments: GardenArguments(
+                            gardenName,
+                            _time,
+                          )
+                        ),
+                      ));
+                  },
+                ),
+              ),
+          ],
+        )
+      )
+    );
+  }
+}
+
+
 
 class _ImageUploadPage extends StatefulWidget{
   @override
@@ -125,7 +208,7 @@ class _ImageUploadPageState extends State<_ImageUploadPage> {
 
   @override
   Widget build(BuildContext context){
-    final String gardenName = ModalRoute.of(context).settings.arguments;
+    final GardenArguments args = ModalRoute.of(context).settings.arguments;
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white10,
@@ -147,7 +230,7 @@ class _ImageUploadPageState extends State<_ImageUploadPage> {
                         child:Image.file(_image),
                       ),
                       Container(
-                        child:Text(gardenName),
+                        child:Text(args.name),
                       ),
                       Container(
                         child: ElevatedButton(
@@ -177,9 +260,10 @@ class _ImageUploadPageState extends State<_ImageUploadPage> {
                             // ignore: deprecated_member_use
                             .setData({
                               'uid': FirebaseAuth.instance.currentUser.uid,
-                              'vegetable': gardenName,
+                              'vegetable': args.name,
+                              'timer': DateTime(2020,1,1,args.timer.hour, args.timer.minute),
                               'imageURL': downloadURL,
-                              'createdAt': Timestamp.now(),
+                              'createdAt': DateTime.now(),
                             });// データ
                             Navigator.of(context).pushReplacementNamed("/home");
                           },

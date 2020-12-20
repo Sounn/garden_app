@@ -32,6 +32,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  # flutter_localizations:
+  #   sdk: flutter
+  intl: ^0.16.1
   firebase_analytics: ^6.2.0
   firebase_auth: ^0.18.3
   firebase_core: ^0.5.2
@@ -40,14 +43,18 @@ dev_dependencies:
   firebase_storage: ^5.2.0
   image_picker: ^0.6.7+14
   shortuuid: ^2.1.1
-  intl: ^0.16.1
+
+#バージョンの使用を強制
+# dependency_overrides:
+#   intl: ^0.16.1
+  
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
-
+  generate: true
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

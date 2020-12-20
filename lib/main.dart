@@ -7,7 +7,6 @@ import 'users/setting_page.dart';
 import 'gardens/garden_list_page.dart';
 import 'gardens/vegetable_single_page.dart';
 import 'gardens/garden_new_page.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -33,7 +32,7 @@ class MyApp extends StatelessWidget {
       '/settings':(BuildContext context) => UserSettingPage(),
       '/vegetable':(BuildContext context) => VegetableSinglePage(),
       '/new':(BuildContext context) => GardenNewPage(),
-    },
+      },
     );
   }
 }
