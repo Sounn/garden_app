@@ -118,9 +118,13 @@ class _AlertOption extends StatelessWidget{
         title: Text('通知  |  ニュース'),
         backgroundColor: Colors.green,
       ),
-      body:Center( 
-        child: Text('通知リスト')
-      )
+      body:Center(
+        child: FlatButton(
+        onPressed: (){
+
+        },
+        child:Text("通知の送信"),
+      ),)
     );
   }
 }
