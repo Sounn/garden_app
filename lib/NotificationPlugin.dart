@@ -120,7 +120,12 @@ class NotificationPlugin{
         platformChannelSpecifics,
         payload: 'New Payload', // Notification Payload
       );
-  }}
+  }
+}
+
+NotificationPlugin notificationPlugin = NotificationPlugin._();
+
+
 
 class ReceiveNotification{
   final int id;

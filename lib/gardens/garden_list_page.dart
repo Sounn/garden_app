@@ -4,7 +4,6 @@ import 'garden.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 class GardenListPage extends StatefulWidget {
   @override
   _GardenListPageState createState() => _GardenListPageState();
@@ -119,11 +118,14 @@ class _AlertOption extends StatelessWidget{
         backgroundColor: Colors.green,
       ),
       body:Center(
-        child: FlatButton(
-        onPressed: (){
-
-        },
-        child:Text("通知の送信"),
+        child: ElevatedButton(
+                  child: Text('通知の送信へ'),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(context , '/send_notification');
+                  }
       ),)
     );
   }
