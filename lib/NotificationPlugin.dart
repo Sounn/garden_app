@@ -25,11 +25,11 @@ class NotificationPlugin{
   }
 
   initialzePlatformSpecifics(){
-    const AndroidInitializationSettings initializationSettingsAndroid =
+    final AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('app_icon');
     final IOSInitializationSettings initializationSettingsIOS =
     IOSInitializationSettings(
-      requestSoundPermission: false,
+      requestSoundPermission: true,
       requestBadgePermission: true,
       requestAlertPermission: true,
       onDidReceiveLocalNotification: (id, title, body, payload) async {
@@ -39,16 +39,16 @@ class NotificationPlugin{
       },
     );
 
-    // final MacOSInitializationSettings initializationSettingsMacOS =
-    //     MacOSInitializationSettings(
-    //         requestAlertPermission: true,
-    //         requestBadgePermission: true,
-    //         requestSoundPermission: false);
+    final MacOSInitializationSettings initializationSettingsMacOS =
+        MacOSInitializationSettings(
+            requestAlertPermission: true,
+            requestBadgePermission: true,
+            requestSoundPermission: true);
 
     initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
-      // macOS: initializationSettingsMacOS
+      macOS: initializationSettingsMacOS
     );
   }
 
@@ -58,11 +58,22 @@ class NotificationPlugin{
           .resolvePlatformSpecificImplementation<
               IOSFlutterLocalNotificationsPlugin>()
           ?.requestPermissions(
-            alert: false,
+            alert: true,
             badge: true,
             sound: true,
           );
   }
+
+  // _requestMacPermission() async {
+  //   flutterLocalNotificationsPlugin
+  //   .resolvePlatformSpecificImplementation<
+  //       MacOSFlutterLocalNotificationsPlugin>()
+  //   ?.requestPermissions(
+  //   alert: true,
+  //   badge: true,
+  //   sound: true,
+  //   );
+  // }
 
   // ignore: non_constant_identifier_names
   SetListenerForLowerVersions(Function onNotificationInLowerVersions){
@@ -98,9 +109,11 @@ class NotificationPlugin{
         platformChannelSpecifics,
         payload: 'Test Payload',
       );
-    }
+  }
+
   Future<void> showNotification() async {
-      var androidChannelSpecifics = AndroidNotificationDetails(
+    print("通知");
+      const AndroidNotificationDetails androidChannelSpecifics = AndroidNotificationDetails(
         'CHANNEL_ID',
         'CHANNEL_NAME',
         "CHANNEL_DESCRIPTION",
@@ -110,8 +123,10 @@ class NotificationPlugin{
         timeoutAfter: 5000,
         styleInformation: DefaultStyleInformation(true, true),
       );
-      var iosChannelSpecifics = IOSNotificationDetails();
-      var platformChannelSpecifics =
+      const IOSNotificationDetails iosChannelSpecifics = IOSNotificationDetails(
+        sound: 'my_sound.aiff',
+      );
+      const NotificationDetails platformChannelSpecifics =
           NotificationDetails(android: androidChannelSpecifics, iOS: iosChannelSpecifics);
       await flutterLocalNotificationsPlugin.show(
         0,  // Notification ID

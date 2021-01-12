@@ -119,7 +119,7 @@ class _AlertOption extends StatelessWidget{
       ),
       body:Center(
         child: ElevatedButton(
-                  child: Text('通知の送信へ'),
+                  child: Text('通知の送信ページへ'),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
                   ),
