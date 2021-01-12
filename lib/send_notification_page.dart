@@ -23,7 +23,7 @@ class _SendNotificationState extends State<SendNotification> {
       ),
       body:Center(
         child: ElevatedButton(
-          child: Text('通知の送信へ'),
+          child: Text('通知を送信する'),
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
           ),
