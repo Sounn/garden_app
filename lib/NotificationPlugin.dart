@@ -4,52 +4,57 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:io' show File, Platform;
 import 'package:rxdart/subjects.dart';
 
-class NotificationPlugin{
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-  var initializationSettings;
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  final BehaviorSubject<ReceiveNotification>
-    didReceivedLocalNotficationSubject =
-     BehaviorSubject<ReceiveNotification>();
+final BehaviorSubject<ReceiveNotification>didReceivedLocalNotficationSubject =
+    BehaviorSubject<ReceiveNotification>();
+
+final BehaviorSubject<String> selectNotificationSubject =
+    BehaviorSubject<String>();
+class NotificationPlugin{
+  var initializationSettings;
   //初期化
   NotificationPlugin._(){
     init();
   }
 
   init() async{
-    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     if(Platform.isIOS){
       _requestIOSPermission();
     }
     initialzePlatformSpecifics();
   }
 
-  initialzePlatformSpecifics(){
+  initialzePlatformSpecifics() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('app_icon');
     final IOSInitializationSettings initializationSettingsIOS =
     IOSInitializationSettings(
-      requestSoundPermission: false,
-      requestBadgePermission: true,
-      requestAlertPermission: true,
-      onDidReceiveLocalNotification: (id, title, body, payload) async {
+        requestAlertPermission: false,
+        requestBadgePermission: false,
+        requestSoundPermission: false,
+      onDidReceiveLocalNotification: (int id, String title, String body, String payload) async {
           ReceiveNotification receivedNotification = 
           ReceiveNotification(id: id, title: title, body: body, payload: payload);
           didReceivedLocalNotficationSubject.add(receivedNotification);
       },
     );
-
-    // final MacOSInitializationSettings initializationSettingsMacOS =
-    //     MacOSInitializationSettings(
-    //         requestAlertPermission: true,
-    //         requestBadgePermission: true,
-    //         requestSoundPermission: false);
-
-    initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
-      // macOS: initializationSettingsMacOS
-    );
+    const MacOSInitializationSettings initializationSettingsMacOS =
+        MacOSInitializationSettings(
+            requestAlertPermission: false,
+            requestBadgePermission: false,
+            requestSoundPermission: false);
+    final InitializationSettings initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid,
+        iOS: initializationSettingsIOS,
+        macOS: initializationSettingsMacOS);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: (String payload) async {
+      if (payload != null) {
+        debugPrint('notification payload: $payload');
+      }
+      selectNotificationSubject.add(payload);
+    });
   }
 
   //通知権限リクエスト
@@ -58,7 +63,7 @@ class NotificationPlugin{
           .resolvePlatformSpecificImplementation<
               IOSFlutterLocalNotificationsPlugin>()
           ?.requestPermissions(
-            alert: false,
+            alert: true,
             badge: true,
             sound: true,
           );
@@ -71,12 +76,12 @@ class NotificationPlugin{
     });
   }
 
-  setOnNotificationClick(Function onNotificationClik) async {
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-    onSelectNotification:(String payload) async {
-      onNotificationClik(payload);
-    });
-  }
+  // setOnNotificationClick(Function onNotificationClik) async {
+  //   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+  //   onSelectNotification:(String payload) async {
+  //     onNotificationClik(payload);
+  //   });
+  // }
 
   Future<void> repeatNotification() async {
       var androidChannelSpecifics = AndroidNotificationDetails(
@@ -87,9 +92,8 @@ class NotificationPlugin{
         priority: Priority.high,
         styleInformation: DefaultStyleInformation(true, true),
       );
-      var iosChannelSpecifics = IOSNotificationDetails();
       var platformChannelSpecifics =
-          NotificationDetails(android: androidChannelSpecifics, iOS: iosChannelSpecifics);
+          NotificationDetails(android: androidChannelSpecifics);
       await flutterLocalNotificationsPlugin.periodicallyShow(
             0,
             'Repeating Test Title',
@@ -100,19 +104,17 @@ class NotificationPlugin{
       );
     }
   Future<void> showNotification() async {
-      var androidChannelSpecifics = AndroidNotificationDetails(
+      const androidChannelSpecifics = AndroidNotificationDetails(
         'CHANNEL_ID',
         'CHANNEL_NAME',
         "CHANNEL_DESCRIPTION",
         importance: Importance.max,
         priority: Priority.high,
-        playSound: true,
-        timeoutAfter: 5000,
+        ticker: 'ticker',
         styleInformation: DefaultStyleInformation(true, true),
       );
-      var iosChannelSpecifics = IOSNotificationDetails();
-      var platformChannelSpecifics =
-          NotificationDetails(android: androidChannelSpecifics, iOS: iosChannelSpecifics);
+      const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidChannelSpecifics);
       await flutterLocalNotificationsPlugin.show(
         0,  // Notification ID
         'Test Title', // Notification Title
@@ -128,15 +130,15 @@ NotificationPlugin notificationPlugin = NotificationPlugin._();
 
 
 class ReceiveNotification{
-  final int id;
-  final String title;
-  final String body;
-  final String payload;
-
   ReceiveNotification({
     @required this.id,
     @required this.title,
     @required this.body,
     @required this.payload,
   });
+
+  final int id;
+  final String title;
+  final String body;
+  final String payload;
 }

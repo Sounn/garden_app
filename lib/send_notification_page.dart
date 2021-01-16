@@ -9,21 +9,21 @@ class SendNotification extends StatefulWidget{
 class _SendNotificationState extends State<SendNotification> {
   void initState(){
     super.initState();
-    notificationPlugin
-      .SetListenerForLowerVersions(onNotificationInLowerVersions);
-    notificationPlugin.setOnNotificationClick(onNotificationClick);
+    // notificationPlugin
+    //   .SetListenerForLowerVersions(onNotificationInLowerVersions);
+    // notificationPlugin.setOnNotificationClick(onNotificationClick);
   }
 
   @override
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        title: Text('通知  |  ニュース'),
+        title: Text('通知'),
         backgroundColor: Colors.green,
       ),
       body:Center(
         child: ElevatedButton(
-          child: Text('通知の送信へ'),
+          child: Text('通知の送信する'),
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
           ),
@@ -36,5 +36,6 @@ class _SendNotificationState extends State<SendNotification> {
 
   onNotificationInLowerVersions(ReceiveNotification rececedNotification){}
 
+  //通知をクリックした時の処理
   onNotificationClick(String payload){}
 }
